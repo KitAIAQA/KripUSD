@@ -38,6 +38,25 @@ def get_full_name(base):
         return FULL_NAMES[base]
     return base
 
+
+def load_all_bases():
+    """загрузка списка монет"""
+    try:
+        r = requests.get(EXCHANGE_URL, timeout=10)
+        bases = []
+        for s in r.json()["symbols"]:
+            if s["quoteAsset"] == "USDT" and s["status"] == "TRADING":
+                b = s["baseAsset"]
+                if b not in bases:
+                    bases.append(b)
+        return bases
+    except Exception:
+        return []
+
+
+
+
+
 ## ---------- Создаём окно ----------
 root = ctk.CTk()
 root.title("KripUSD — курсы криптовалют к USD")
