@@ -100,6 +100,69 @@ def show_main():
     """убирает заставку"""
     for child in root.winfo_children():
         child.destroy()
+    main_frame = ctk.CTkFrame(root, corner_radius=25, fg_color="#202020",
+                              border_width=2, border_color="#3a3a3a")
+    main_frame.pack(pady=15, padx=20, fill="both", expand=True)
+
+    ctk.CTkLabel(main_frame, text="Курс к USD",
+                 font=("Helvetica", 24, "bold")).pack(pady=(20, 10))
+
+    # первый ряд: чекбокс + список монет
+    row1 = ctk.CTkFrame(main_frame, fg_color="transparent")
+    row1.pack(pady=6, padx=15, fill="x")
+    global var1, menu1  # без global Python посчитает var1 и menu1 локальными переменными
+    var1 = ctk.BooleanVar(value=False)
+    ctk.CTkCheckBox(row1, text="", variable=var1, width=30,
+                    checkbox_width=22, checkbox_height=22,
+                    fg_color="#7b1fa2", hover_color="#9c27b0").pack(side="left", padx=(0, 10))
+    menu1 = ctk.CTkOptionMenu(row1, values=[""], font=("Arial", 13),
+                              fg_color="#2b2b2b", button_color="#7b1fa2",
+                              button_hover_color="#9c27b0")
+    menu1.set("")
+    menu1.pack(side="left", fill="x", expand=True)
+
+    # второй ряд: чекбокс + список монет
+    row2 = ctk.CTkFrame(main_frame, fg_color="transparent")
+    row2.pack(pady=6, padx=15, fill="x")
+    global var2, menu2, status_label
+    var2 = ctk.BooleanVar(value=False)
+    ctk.CTkCheckBox(row2, text="", variable=var2, width=30,
+                    checkbox_width=22, checkbox_height=22,
+                    fg_color="#7b1fa2", hover_color="#9c27b0").pack(side="left", padx=(0, 10))
+    menu2 = ctk.CTkOptionMenu(row2, values=[""], font=("Arial", 13),
+                              fg_color="#2b2b2b", button_color="#7b1fa2",
+                              button_hover_color="#9c27b0")
+    menu2.set("")
+    menu2.pack(side="left", fill="x", expand=True)
+
+    # кнопка и строка статуса
+    ctk.CTkButton(main_frame, text="Показать курс", corner_radius=10,
+                  height=40, fg_color="#7b1fa2", hover_color="#9c27b0",
+                  command=open_results_window).pack(pady=18)
+
+    status_label = ctk.CTkLabel(main_frame, text="Загружаем список монет...",
+                                font=("Arial", 12), text_color="#a0a0a0")
+    status_label.pack(pady=10)
+
+    # скачиваем полный список монет
+    bases = load_all_bases()
+    if len(bases) == 0:
+        status_label.configure(text="Нет соединения с Binance")
+        return
+    update_menus(bases)
+
+
+def update_menus(bases):
+    """заполнение выпадающих списков монетами"""
+    pass
+
+
+def open_results_window():
+    """обработка результата ввода монет"""
+    pass
+
+
+
 
 
 ## ---------- Запуск ----------
