@@ -154,7 +154,12 @@ def show_main():
 
 def update_menus(bases):
     """заполнение выпадающих списков монетами"""
-    pass
+    values = [""]
+    for b in bases:
+        values.append(b + " — " + get_full_name(b))
+    menu1.configure(values=values)
+    menu2.configure(values=values)
+    status_label.configure(text="Доступно монет: " + str(len(bases)))
 
 
 def open_results_window():
