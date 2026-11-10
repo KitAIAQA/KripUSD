@@ -164,10 +164,49 @@ def update_menus(bases):
 
 def open_results_window():
     """обработка результата ввода монет"""
+    selected = []  # сюда сложим монеты, которые пользователь отметил
+    if var1.get() == True:  # проверяем галочку первого ряда, var1 видна без параметров она глобальная
+        option = menu1.get()
+        if option == "":  # защита от "нажал галочку и забыл выбрать"
+            status_label.configure(text="Выберите монету в выпадающем списке")
+            return
+        selected.append(option)  # добавляем выбранный пункт целиком, вместе с названием BTC — Bitcoin
+    if var2.get() == True:
+        option = menu2.get()
+        if option == "":
+            status_label.configure(text="Выберите монету в выпадающем списке")
+            return
+        selected.append(option)
+
+    if len(selected) == 0:  # обе галочки пустые: просим отметить хотя бы одну
+        status_label.configure(text="Отметьте хотя бы одну монету")
+        return
+
+    status_label.configure(text="Загружаем курсы...")
+
+    # новое окно с результатами
+    win = ctk.CTkToplevel(root)
+    win.title("Результаты — KripUSD")
+    win.geometry("440x520")
+    win.configure(fg_color="#151515")
+
+    ctk.CTkLabel(win, text="Курсы к USD", font=("Helvetica", 22, "bold"),
+                 text_color="#9c27b0").pack(pady=(20, 10))
+
+    # показываем карточку для каждой выбранной монеты
+    for option in selected:
+        base = option.split(" — ")[0]
+        show_coin_info(win, base)
+
+    ctk.CTkButton(win, text="Закрыть", width=120, corner_radius=10,
+                  fg_color="#7b1fa2", command=win.destroy).pack(pady=15)
+
+    status_label.configure(text="Обновлено успешно")
+
+
+def show_coin_info(win, base):
+    """вывод результатов в отдельном окне"""
     pass
-
-
-
 
 
 ## ---------- Запуск ----------
