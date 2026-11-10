@@ -54,7 +54,21 @@ def load_all_bases():
         return []
 
 
-
+def get_coin_info(base):
+    """спрашивает у Binance текущий курс монеты и курс 24 часа назад"""
+    info = {}
+    try:
+        r = requests.get(TICKER_URL, params={"symbol": base + "USDT"}, timeout=5)
+        t = r.json()
+        info["price"] = float(t["lastPrice"])
+        info["old_price"] = float(t["openPrice"])
+        time = datetime.fromtimestamp(
+            int(t["closeTime"]) / 1000)
+        info["date_str"] = "Обновлено: " + time.strftime("%d.%m.%Y в %H:%M")
+        info["error"] = ""
+    except Exception:
+        info["error"] = "Не удалось получить курс"
+    return info
 
 
 ## ---------- Создаём окно ----------
