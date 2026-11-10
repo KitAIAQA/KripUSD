@@ -206,7 +206,45 @@ def open_results_window():
 
 def show_coin_info(win, base):
     """вывод результатов в отдельном окне"""
-    pass
+    info = get_coin_info(base)  # запрос к Binance
+
+    block = ctk.CTkFrame(win, corner_radius=15, fg_color="#202020",
+                         border_width=1, border_color="#3a3a3a")  #отдельный фрейм-«карточка» с рамкой под каждую монету
+    block.pack(pady=8, padx=15, fill="x")
+
+    if info["error"] != "":  # если при запросе случился сбой, вместо курса показываем красное сообщение
+        ctk.CTkLabel(block, text=base + ": " + info["error"],
+                     font=("Arial", 14), text_color="#f44336").pack(pady=10)
+        return
+
+    price = info["price"]
+    old_price = info["old_price"]
+    # текущий курс и время обновления
+    ctk.CTkLabel(block, text=base + ": $" + str(round(price, 2)),
+                 font=("Segoe UI", 22, "bold"), text_color="#9c27b0").pack(pady=(10, 2))  # крупная надпись
+    ## «BTC: $64753.12»: округляем до 2 знаков и приклеиваем к коду валюты
+    ctk.CTkLabel(block, text=info["date_str"],
+                 font=("Segoe UI", 13, "italic"), text_color="#b39ddb").pack(pady=(0, 6))  # строка "Обновлено: …",
+    ## подготовленная в get_coin_info
+
+    # сравнение с курсом 24ч назад
+    diff = price - old_price  # насколько курс изменился за сутки, положительное- вырос, отрицательное- упал
+    pct = diff / old_price * 100  # то же самое в процентах, изменение 500 при цене 100000- это 0.5%
+
+    if diff > 0:  # рост- зелёный треугольник вверх
+        arrow = "▲"
+        color = "#4caf50"
+    elif diff < 0:  # падение- красный вниз
+        arrow = "▼"
+        color = "#f44336"
+    else:  # без изменений- серый ромбик
+        arrow = "►"
+        color = "#a0a0a0"
+
+    text = "24 ч назад ($" + str(round(old_price, 2)) + "):\n"
+    text = text + arrow + " $" + str(round(abs(diff), 2)) + " | " + str(round(abs(pct), 2)) + "%"
+    ctk.CTkLabel(block, text=text, font=("Arial", 13),
+                 text_color=color, justify="center").pack(pady=(0, 10))
 
 
 ## ---------- Запуск ----------
