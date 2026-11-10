@@ -78,5 +78,30 @@ root.geometry("420x490")
 root.configure(fg_color="#151515")
 
 
+## ---------- Заставка ----------
+def show_splash():
+    """создает заставку"""
+    splash_frame = ctk.CTkFrame(root, fg_color="#151515", corner_radius=0)
+    splash_frame.pack(fill="both", expand=True)
+
+    logo_label = ctk.CTkLabel(splash_frame, text="")
+    logo_label.place(relx=0.5, rely=0.5, anchor="center")
+
+    img = Image.open(LOGO_PATH)
+    logo_image = ctk.CTkImage(light_image=img, dark_image=img, size=img.size)
+    logo_label.configure(image=logo_image)
+
+    # через 1 секунду убрать заставку и показать интерфейс
+    root.after(SPLASH_TIME, show_main)
+
+
+## ---------- Основной интерфейс ----------
+def show_main():
+    """убирает заставку"""
+    for child in root.winfo_children():
+        child.destroy()
+
+
 ## ---------- Запуск ----------
+show_splash()  # запуск заставки
 root.mainloop()
